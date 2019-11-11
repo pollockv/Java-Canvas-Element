@@ -25,24 +25,29 @@
 			var picker = document.getElementById('picker');
 			var ctx = canvas.getContext("2d");
 			var color = picker.value;
+			var pen = true;
 			ctx.canvas.height = window.innerHeight * 0.8;
 			ctx.canvas.width = window.innerWidth * 0.8;
 
-			var mouse = {x: 0, y: 0};
+			function draw(x,y) {
+				ctx.beginPath();
+				ctx.arc(x,y,10,0,2 * Math.PI);
+				ctx.fillStyle = color;
+				ctx.fill();
+			}
 
-			ctx.lineWidth = 10;
-			ctx.lineJoin = 'round';
-			ctx.lineCap = 'round';
-			ctx.strokeStyle = color;
-
-			picker.addEventListener("input", updateColor, false);
+			picker.addEventListener('change', function(e) {
+				color = event.target.value;
+				ctx.fillStyle = color;
+				picker.value = color;
+			}, false);
 
 			function updateColor(event) {
     			color = event.target.value;
-					ctx.strokeStyle = color;
+					ctx.fillStyle = color;
 				}
 
-			document.onkeypress = function(e) {
+			window.addEventListener('keydown', function(e) {
 
 				if (e.key === 'r') {
 					color = 'red';
@@ -64,30 +69,15 @@
 					ctx.clearRect(0,0,canvas.width,canvas.height);
 				}
 
-				ctx.strokeStyle = color;
+				ctx.fillStyle = color;
 				picker.value = color;
-			}
+			}, false);
 
-			var onPaint = function() {
-					ctx.lineTo(mouse.x, mouse.y);
-					ctx.strokeStyle = color;
-					ctx.stroke();
-				}
 
 			canvas.addEventListener('mousemove', function(e) {
-				mouse.x = e.pageX - this.offsetLeft;
-				mouse.y = e.pageY - this.offsetTop;
-			}, false);
-
-			canvas.addEventListener('mousedown', function(e) {
-				ctx.beginPath();
-				ctx.moveTo(mouse.x, mouse.y);
-
-				canvas.addEventListener('mousemove', onPaint, false);
-			}, false);
-
-			canvas.addEventListener('mouseup', function() {
-				canvas.removeEventListener('mousemove', onPaint, false);
+				if (pen == true) {
+					draw(e.offsetX, e.offsetY);
+				}
 			}, false);
 
 		</script>
