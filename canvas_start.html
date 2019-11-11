@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Drawing Area</title>
+<!-- You can add your style here rather than in an external style sheet. -->
+<style>
+	canvas {
+	    border:5px solid #d3d3d3;
+	    background-color: #f1f1f1;
+	    display: block;
+	}
+</style>
+</head>
+<body>
+    <!-- DO NOT MODIFY THIS HTML -->
+    <canvas id = "myCanvas" width = "350" height = "500"  ></canvas>
+    <input type = "color" id = "picker"/>
+
+
+<script>
+
+			var canvas = document.getElementById('myCanvas');
+			var picker = document.getElementById('picker');
+			var ctx = canvas.getContext("2d");
+			var color = picker.value;
+			ctx.canvas.height = window.innerHeight * 0.8;
+			ctx.canvas.width = window.innerWidth * 0.8;
+
+			var mouse = {x: 0, y: 0};
+
+			ctx.lineWidth = 10;
+			ctx.lineJoin = 'round';
+			ctx.lineCap = 'round';
+			ctx.strokeStyle = color;
+
+			picker.addEventListener("input", updateColor, false);
+
+			function updateColor(event) {
+    			color = event.target.value;
+					ctx.strokeStyle = color;
+				}
+
+			document.onkeypress = function(e) {
+
+				if (e.key === 'r') {
+					color = 'red';
+				}
+
+				if (e.key === 'b') {
+					color = 'blue';
+				}
+
+				if (e.key === 'g') {
+					color = 'green';
+				}
+
+				if (e.key === 'y') {
+					color = 'yellow';
+				}
+
+				if (e.key === ' ') {
+					ctx.clearRect(0,0,canvas.width,canvas.height);
+				}
+
+				ctx.strokeStyle = color;
+				picker.value = color;
+			}
+
+			var onPaint = function() {
+					ctx.lineTo(mouse.x, mouse.y);
+					ctx.strokeStyle = color;
+					ctx.stroke();
+				}
+
+			canvas.addEventListener('mousemove', function(e) {
+				mouse.x = e.pageX - this.offsetLeft;
+				mouse.y = e.pageY - this.offsetTop;
+			}, false);
+
+			canvas.addEventListener('mousedown', function(e) {
+				ctx.beginPath();
+				ctx.moveTo(mouse.x, mouse.y);
+
+				canvas.addEventListener('mousemove', onPaint, false);
+			}, false);
+
+			canvas.addEventListener('mouseup', function() {
+				canvas.removeEventListener('mousemove', onPaint, false);
+			}, false);
+
+		</script>
+</body>
+</html>
